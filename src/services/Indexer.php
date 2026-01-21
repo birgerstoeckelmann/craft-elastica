@@ -71,21 +71,21 @@ class Indexer extends Component
      *
      * @var string[]
      */
-    protected array $sectionHandles;
+    protected array $sectionHandles = [];
 
     /**
      * list of group handles to consider for (re-)indexing categories
      *
      * @var string[]
      */
-    protected array $categoryGroupHandles;
+    protected array $categoryGroupHandles = [];
 
     /**
      * list of volume handles to consider for (re-)indexing assets
      *
      * @var string[]
      */
-    protected array $volumeHandles;
+    protected array $volumeHandles = [];
 
     /**
      * @inheritdoc
