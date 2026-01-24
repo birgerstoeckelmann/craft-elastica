@@ -70,6 +70,12 @@ class Settings extends Model
      */
     public ?int $reindexTtr = null;
 
+    /**
+     * Indexer class
+     * @var string
+     */
+    public string $indexer = '';
+
     // Public Methods
     // =========================================================================
 

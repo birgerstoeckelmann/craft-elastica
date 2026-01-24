@@ -32,5 +32,9 @@ return [
     // Overrides the default ttr for the reindexing Queue Job.
     // This might be necessary when you have lots of data to index.
     // Set to null to use Craft's default (300 seconds).
-    'reindexTtr' => null
+    'reindexTtr' => null,
+
+    // Indexer class
+    'indexer' => \fork\elastica\services\Indexer::class
+
 ];

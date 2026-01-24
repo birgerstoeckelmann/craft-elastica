@@ -69,7 +69,7 @@ class Elastica extends Plugin
      *
      * @var string
      */
-    public string $schemaVersion = '5.0.0';
+    public string $schemaVersion = '5.0.1';
 
     // Public Methods
     // =========================================================================
@@ -92,6 +92,7 @@ class Elastica extends Plugin
 
         $this->setComponents([
             'utility' => UtilityService::class,
+            'indexer' => $this->getSettings()->indexer ?? Indexer::class
         ]);
 
         if (Craft::$app->getRequest()->getIsCpRequest()) {
