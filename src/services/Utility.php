@@ -97,11 +97,12 @@ class Utility extends Component
     /**
      * Saves index template to plugin settings and elasticsearch
      *
+     * @param bool $decodeJson
      * @return string
      *
      * @throws MissingComponentException
      */
-    protected function saveSearchTemplates(): string
+    protected function saveSearchTemplates(bool $decodeJson = true): string
     {
         $elastica = Elastica::$plugin;
         $settings = $elastica->getSettings();
@@ -109,7 +110,7 @@ class Utility extends Component
         try {
             foreach ($settings->searchTemplates as $row) {
                 $templateHandle = $row[0];
-                $templateSource = Json::decode($row[1]);
+                $templateSource = $decodeJson ? Json::decode($row[1]) : $row[1];
                 $templateParams = !empty($row[2]) ? Json::decode($row[2]) : null;
                 $elastica->indexer->saveSearchTemplate($templateHandle, $templateSource, $templateParams);
             }
