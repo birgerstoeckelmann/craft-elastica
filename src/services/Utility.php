@@ -42,7 +42,8 @@ class Utility extends Component
         }
 
         if ($request->getIsPost() && $request->getBodyParam('task') == 'search-templates' && Craft::$app->user->checkPermission('elasticaSearchTemplates')) {
-            $result = $this->saveSearchTemplates();
+            $isEncoded = (bool)$request->getBodyParam('is-encoded');
+            $result = $this->saveSearchTemplates(!$isEncoded);
         }
 
         return $result;

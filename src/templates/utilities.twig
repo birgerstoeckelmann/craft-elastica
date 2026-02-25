@@ -86,10 +86,11 @@
     <p>(Admin only or users with elastica search templates permission)</p>
     <form class="utility" method="post" accept-charset="UTF-8" enctype="multipart/form-data" action="{{ actionUrl }}">
         {{ forms.hidden({name: 'task', value: 'search-templates'}) }}
+        {{ forms.checkboxField({name: 'is-encoded', checked: true, label: 'Already encoded'}) }}
         {{ csrfInput() }}
 
         <div class="buttons">
-            <input type="submit" class="btn submit{% if connectionStatus is not same as(true) %} disabled{% endif %}" value="Apply Index Template" {% if connectionStatus is not same as(true) %}disabled{% endif %}/>
+            <input type="submit" class="btn submit{% if connectionStatus is not same as(true) %} disabled{% endif %}" value="Apply Search Template" {% if connectionStatus is not same as(true) %}disabled{% endif %}/>
         </div>
     </form>
 {% endif %}
