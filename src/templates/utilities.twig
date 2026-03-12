@@ -72,6 +72,13 @@
     <p>(Admin only or users with elastica index templates permission)</p>
     <form class="utility" method="post" accept-charset="UTF-8" enctype="multipart/form-data" action="{{ actionUrl }}">
         {{ forms.hidden({name: 'task', value: 'index-template'}) }}
+        {{ forms.textField({
+            label: 'Generator class',
+            instructions: 'Use a class to generate an index template',
+            id: 'indexGenerator',
+            name: 'generator',
+            value: 'dccruhr\\craftelasticindexer\\services\\IndexTemplateService',
+        }) }}
         {{ csrfInput() }}
 
         <div class="buttons">
@@ -87,6 +94,13 @@
     <form class="utility" method="post" accept-charset="UTF-8" enctype="multipart/form-data" action="{{ actionUrl }}">
         {{ forms.hidden({name: 'task', value: 'search-templates'}) }}
         {{ forms.checkboxField({name: 'is-encoded', checked: true, label: 'Already encoded'}) }}
+        {{ forms.textField({
+            label: 'Generator class',
+            instructions: 'Use a class to generator search templates',
+            id: 'searchGenerator',
+            name: 'generator',
+            value: 'dccruhr\\craftelasticindexer\\services\\SearchTemplateService',
+        }) }}
         {{ csrfInput() }}
 
         <div class="buttons">

@@ -38,12 +38,14 @@ class Utility extends Component
         }
 
         if ($request->getIsPost() && $request->getBodyParam('task') == 'index-template' && Craft::$app->user->checkPermission('elasticaIndexTemplates')) {
-            $result = $this->saveIndexTemplate();
+            $generator = $request->getBodyParam('generator') ?? null;
+            $result = $this->saveIndexTemplate($generator);
         }
 
         if ($request->getIsPost() && $request->getBodyParam('task') == 'search-templates' && Craft::$app->user->checkPermission('elasticaSearchTemplates')) {
             $isEncoded = (bool)$request->getBodyParam('is-encoded');
-            $result = $this->saveSearchTemplates(!$isEncoded);
+            $generator = $request->getBodyParam('generator') ?? null;
+            $result = $this->saveSearchTemplates(!$isEncoded, $generator);
         }
 
         return $result;
@@ -75,17 +77,18 @@ class Utility extends Component
     /**
      * Saves index template to plugin settings and elasticsearch
      *
+     * @param $generator
      * @return string
      *
      * @throws MissingComponentException
      */
-    protected function saveIndexTemplate(): string
+    protected function saveIndexTemplate($generator = null): string
     {
         $elastica = Elastica::$plugin;
         $settings = $elastica->getSettings();
 
         try {
-            $templateArray = Json::decode($settings->indexTemplate);
+            $templateArray = Json::decode(!empty($generator) ? $generator::getIndexAsJson() : $settings->indexTemplate);
             $elastica->indexer->saveIndexTemplate($settings->indexTemplateName, $templateArray);
             $this->setNotice('Index Template saved!');
         } catch (Exception $exception) {
@@ -103,13 +106,15 @@ class Utility extends Component
      *
      * @throws MissingComponentException
      */
-    protected function saveSearchTemplates(bool $decodeJson = true): string
+    protected function saveSearchTemplates(bool $decodeJson = true, $generator = null): string
     {
         $elastica = Elastica::$plugin;
         $settings = $elastica->getSettings();
 
+        $searchTemplates = !empty($generator) ? $generator::getSearchTemplates() : $settings->searchTemplates;
+
         try {
-            foreach ($settings->searchTemplates as $row) {
+            foreach ($searchTemplates as $row) {
                 $templateHandle = $row[0];
                 $templateSource = $decodeJson ? Json::decode($row[1]) : $row[1];
                 $templateParams = !empty($row[2]) ? Json::decode($row[2]) : null;
