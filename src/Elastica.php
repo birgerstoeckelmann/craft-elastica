@@ -106,9 +106,11 @@ class Elastica extends Plugin
         }
 
         // elasticsearch index actions
-        Event::on(Element::class, Element::EVENT_AFTER_PROPAGATE, function (ModelEvent $event) {
-            $this->indexer->handleAfterSaveEvent($event);
-        });
+        if($this->getSettings()->useAfterSaveEventHandler) {
+            Event::on(Element::class, Element::EVENT_AFTER_SAVE, function (ModelEvent $event) {
+                $this->indexer->handleAfterSaveEvent($event);
+            });
+        }
         Event::on(Element::class, Element::EVENT_AFTER_RESTORE, function (Event $event) {
             $this->indexer->handleAfterRestoreEvent($event);
         });

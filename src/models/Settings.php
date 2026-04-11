@@ -76,6 +76,12 @@ class Settings extends Model
      */
     public string $indexer = '';
 
+    /**
+     * Use the Elastica Element::EVENT_AFTER_SAVE event handler
+     * @var bool
+     */
+    public bool $useAfterSaveEventHandler = true;
+
     // Public Methods
     // =========================================================================
 

@@ -63,6 +63,14 @@
     on: settings.indexingEnabled is same as(true) ? '1' : '0',
 }) }}
 
+{{ forms.lightswitchField({
+    label: 'Use Elastica\'s Element::EVENT_AFTER_SAVE event handler',
+    instructions: 'Enable/Disable the internal indexing event handler after saving and element',
+    id: 'useAfterSaveEventHandler',
+    name: 'useAfterSaveEventHandler',
+    on: settings.useAfterSaveEventHandler is same as(true) ? '1' : '0',
+}) }}
+
 <hr />
 
 {{ forms.textField({
