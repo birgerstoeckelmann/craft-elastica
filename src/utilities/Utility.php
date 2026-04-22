@@ -88,6 +88,7 @@ class Utility extends BaseUtility
             'triggered' => $triggered,
             'indexTemplateName' => $settings->indexTemplateName,
             'indexTemplate' => $settings->indexTemplate,
+            'sectionsToIndex' => $settings->sectionsToIndex
         ]);
     }
 }

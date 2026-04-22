@@ -17,6 +17,7 @@ use craft\base\Plugin;
 use craft\events\ModelEvent;
 use craft\events\RegisterComponentTypesEvent;
 use craft\events\RegisterUserPermissionsEvent;
+use craft\records\Section;
 use craft\services\UserPermissions;
 use craft\services\Utilities;
 use fork\elastica\models\Settings;
@@ -69,7 +70,7 @@ class Elastica extends Plugin
      *
      * @var string
      */
-    public string $schemaVersion = '5.0.1';
+    public string $schemaVersion = '5.0.2';
 
     // Public Methods
     // =========================================================================
@@ -163,11 +164,13 @@ class Elastica extends Plugin
      */
     protected function settingsHtml(): string
     {
+        $sections = collect(Section::find()->all())->map(fn($s) => $s->handle)->sort();
         return Craft::$app->view->renderTemplate(
             'elastica/settings',
             [
                 'connectionStatus' => $this->indexer->getConnectionStatus(),
                 'settings' => $this->getSettings(),
+                'sections' => $sections
             ]
         );
     }

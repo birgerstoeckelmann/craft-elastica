@@ -73,6 +73,19 @@
 
 <hr />
 
+<strong>Sections to index</strong>
+{% for section in sections %}
+    {{ forms.checkboxField({
+        label: section,
+        id: section ~ 'Selection',
+        value: section,
+        name: 'sectionsToIndex[]',
+        checked: (section in settings.sectionsToIndex)
+    }) }}
+{% endfor %}
+
+<hr />
+
 {{ forms.textField({
     label: 'Index Template Name',
     instructions: 'Name for the index template in elasticsearch',

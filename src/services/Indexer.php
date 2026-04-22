@@ -234,25 +234,45 @@ class Indexer extends Component
     }
 
     /**
+     * @param string $indexName
+     * @param array $reindexSections
+     * @return bool
+     */
+    protected function ignoreSection(string $indexName, array $reindexSections = []): bool
+    {
+        if (empty($reindexSections)) {
+            return false;
+        }
+        return collect(array_map(fn($section) => str_starts_with($this->indexPrefix . '_' . StringHelper::toSnakeCase($section), $indexName), $reindexSections))->doesntContain(true);
+    }
+
+    /**
      * Reindex the elements.
      *
      * @param ReindexJob|null $reindexJob
      * @param QueueInterface|null $queue
      * @param bool $deleteAll delete all contents and index settings and mappings
+     * @param array $reindexSections only reindex this sections
      * @throws ClientResponseException
      * @throws InvalidConfigException
      * @throws MissingComponentException
      * @throws MissingParameterException
      * @throws ServerResponseException
      */
-    public function reIndex(ReindexJob $reindexJob = null, QueueInterface $queue = null, bool $deleteAll = false): void
+    public function reIndex(?ReindexJob $reindexJob = null, ?QueueInterface $queue = null, bool $deleteAll = false, array $reindexSections = []): void
     {
         if ($deleteAll) {
             foreach ($this->getAllIndexNames() as $indexName) {
+                if ($this->ignoreSection($indexName, $reindexSections)) {
+                    continue;
+                }
                 $this->client->indices()->delete(['index' => $indexName, 'ignore_unavailable' => true]);
             }
         } else {
             foreach ($this->getAllIndexNames() as $indexName) {
+                if ($this->ignoreSection($indexName, $reindexSections)) {
+                    continue;
+                }
                 // delete content only to keep settings and mappings
                 $this->client->deleteByQuery(
                     [
@@ -272,8 +292,11 @@ class Indexer extends Component
 
         $sites = Craft::$app->sites->getAllSites();
         $sitesCount = count($sites);
+
+        $sectionsToIndex = !empty($reindexSections) ? $reindexSections : $this->sectionHandles;
+
         foreach ($sites as $siteIndex => $site) {
-            $entries = Entry::find()->section($this->sectionHandles)->site($site)->all();
+            $entries = Entry::find()->section($sectionsToIndex)->site($site)->all();
             $categories = Category::find()->group($this->categoryGroupHandles)->site($site)->all();
             /** @var Asset[] $assets */
             $assets = Asset::find()->volume($this->volumeHandles)->site($site)->all();
@@ -403,7 +426,7 @@ class Indexer extends Component
      * @throws ServerResponseException
      * @throws MissingParameterException
      */
-    public function saveSearchTemplate(string $handle, array $source, array $params = null): Elasticsearch|Promise
+    public function saveSearchTemplate(string $handle, array $source, ?array $params = null): Elasticsearch|Promise
     {
         return $this->client->putScript([
             'id' => $handle,

@@ -34,7 +34,8 @@ class Utility extends Component
         $result = '';
 
         if ($request->getIsPost() && $request->getBodyParam('task') == 're-index') {
-            $result = $this->triggerReindex($request->getBodyParam('deleteAll'));
+            $reindexSections = $request->getBodyParam('reindexSections') ?? [];
+            $result = $this->triggerReindex($request->getBodyParam('deleteAll'), $reindexSections);
         }
 
         if ($request->getIsPost() && $request->getBodyParam('task') == 'index-template' && Craft::$app->user->checkPermission('elasticaIndexTemplates')) {
@@ -55,16 +56,18 @@ class Utility extends Component
      * Triggers the re-indexing of entries in Elasticsearch and returns the triggered task's name or an empty string if this didn't work out.
      *
      * @param bool $deleteAll delete all including settings and mappings
+     * @param array $reindexSections
      * @return string
      *
      * @throws MissingComponentException
      */
-    protected function triggerReindex(bool $deleteAll = false): string
+    protected function triggerReindex(bool $deleteAll = false, array $reindexSections = []): string
     {
-        $jobId = Queue::push(new ReindexJob(['deleteAll' => $deleteAll]), ttr: Elastica::$plugin->settings->reindexTtr);
+
+        $jobId = Queue::push(new ReindexJob(['deleteAll' => $deleteAll, 'reindexSections' => $reindexSections]), ttr: Elastica::$plugin->settings->reindexTtr);
 
         if (!empty($jobId)) {
-            $this->setNotice('Re-indexing triggered.');
+            $this->setNotice('Re-indexing ' . (!empty($reindexSections) ? 'of ' . implode(',', $reindexSections) : '') . ') triggered.');
 
             return 're-index-triggered';
         }

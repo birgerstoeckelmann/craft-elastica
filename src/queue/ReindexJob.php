@@ -21,6 +21,7 @@ use yii\queue\Queue;
 class ReindexJob extends BaseJob
 {
     public bool $deleteAll = false;
+    public array $reindexSections = [];
 
     /**
      * Returns a default description for [[getDescription()]].
@@ -43,7 +44,7 @@ class ReindexJob extends BaseJob
     public function execute($queue): void
     {
         $this->setProgress($queue, 0);
-        Elastica::$plugin->indexer->reIndex($this, $queue, $this->deleteAll);
+        Elastica::$plugin->indexer->reIndex($this, $queue, $this->deleteAll, $this->reindexSections);
         $this->setProgress($queue, 1);
     }
 
@@ -55,7 +56,7 @@ class ReindexJob extends BaseJob
      * @param float $progress the progress this step corresponds to, must be a value between 0 and 1
      * @param string|null $label label to be printed next to progress as additional information in the Queue Manager
      */
-    public function step(QueueInterface $queue, Closure $closure, float $progress = 0.0, string $label = null): void
+    public function step(QueueInterface $queue, Closure $closure, float $progress = 0.0, ?string $label = null): void
     {
         // ensure progress is a float between 0 and 1
         $progress = !is_numeric($progress) || $progress < 0 ? 0.0 : ($progress > 1 ? 1.0 : floatval($progress));

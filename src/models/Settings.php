@@ -82,6 +82,12 @@ class Settings extends Model
      */
     public bool $useAfterSaveEventHandler = true;
 
+    /**
+     * The section handles to index
+     * @var array
+     */
+    public array $sectionsToIndex = [];
+
     // Public Methods
     // =========================================================================
 
@@ -116,7 +122,7 @@ class Settings extends Model
                                 throw new Exception("Handle must not be empty");
                             }
                             Json::decode($row[1]);
-                            if (! empty($row[2])) {
+                            if (!empty($row[2])) {
                                 Json::decode($row[2]);
                             }
                         }
@@ -125,7 +131,8 @@ class Settings extends Model
                     $this->addError($attribute, $exception->getMessage());
                 }
             }],
-            ['reindexTtr', 'number', 'integerOnly' => true]
+            ['reindexTtr', 'number', 'integerOnly' => true],
+            ['sectionsToIndex', 'required']
         ];
     }
 }

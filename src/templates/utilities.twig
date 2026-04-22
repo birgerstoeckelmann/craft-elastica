@@ -44,6 +44,16 @@
     </div>
 
     {% if not reIndexTriggered and (craft.app.user.isAdmin or craft.app.user.can('elasticaIndexTemplates')) %}
+        <strong>Only re-index the following sections (keep empty for all)</strong>
+        {% for section in sectionsToIndex %}
+            {{ forms.checkboxField({
+                label: section,
+                value: section,
+                id: section ~ 'Selection',
+                name: 'reindexSections[]',
+                disabled: connectionStatus is not same as(true)
+            }) }}
+        {% endfor %}
         {{ forms.checkboxField({
             label: 'Delete complete index (WARNING: including settings and mappings!)',
             id: 'deleteAll',
