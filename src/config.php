@@ -22,6 +22,8 @@
  * you do for 'general.php'
  */
 
+use fork\elastica\services\Indexer;
+
 return [
     'indexingEnabled' => true,
     'hosts' => [],
@@ -35,6 +37,6 @@ return [
     'reindexTtr' => null,
 
     // Indexer class
-    'indexer' => \fork\elastica\services\Indexer::class
+    'indexer' => Indexer::class
 
 ];

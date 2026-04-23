@@ -105,6 +105,7 @@ class Utility extends Component
      * Saves index template to plugin settings and elasticsearch
      *
      * @param bool $decodeJson
+     * @param null $generator
      * @return string
      *
      * @throws MissingComponentException
