@@ -67,7 +67,7 @@ class Utility extends Component
         $jobId = Queue::push(new ReindexJob(['deleteAll' => $deleteAll, 'reindexSections' => $reindexSections]), ttr: Elastica::$plugin->settings->reindexTtr);
 
         if (!empty($jobId)) {
-            $this->setNotice('Re-indexing ' . (!empty($reindexSections) ? 'of ' . implode(',', $reindexSections) : '') . ') triggered.');
+            $this->setNotice('Re-indexing' . (!empty($reindexSections) ? ' of ' . implode(',', $reindexSections) : '') . ' triggered.');
 
             return 're-index-triggered';
         }
